@@ -16,20 +16,20 @@
             
             <Style x:Key="BaseStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="Silver" />
-                <Setter Property="BorderRadius" Value="0" />
-                <Setter Property="Opacity" Value="1" />
+                <Setter Property="BorderRadius" Value="20" />
+                <!--<Setter Property="Opacity" Value="1" />-->
             </Style>
 
-            <Style x:Key="MainStyle" TargetType="Button" BasedOn="{StaticResource BaseStyle}"> 
-                <!--<Setter Property="BorderColor"  Value="Yellow" />
+            <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}"> 
+                <Setter Property="BorderColor"  Value="Yellow" />
                 <Setter Property="TextColor" Value="Blue" />
-                <Setter Property="FontSize" Value="Large" />-->
+                <Setter Property="FontSize" Value="Large" />
             </Style>
 
         </ResourceDictionary>
     </ContentPage.Resources>
-    <!--<Button BorderRadius="45"  Opacity="0" >-->
-    <Grid Opacity="1">
+    <!--<Button BorderRadius="30"  Opacity="0"  InputTransparent="True">-->
+    <Grid>
         
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -54,7 +54,8 @@
                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" />
 
         <Button Text="C" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Clicked="ButtonCancel_Clicked" />
-        <Button Text="/" Grid.Row="2" Grid.Column="3" Clicked="ButtonNumber_Click" />
+        <Button Text="/" Grid.Row="2" Grid.Column="3" Clicked="ButtonNumber_Click" 
+                  Style="{StaticResource ButtonStyle}" />
         
         <Button Text="7" Grid.Row="3" Grid.Column="0" Clicked="ButtonNumber_Click" />
         <Button Text="8" Grid.Row="3" Grid.Column="1" Clicked="ButtonNumber_Click" />
