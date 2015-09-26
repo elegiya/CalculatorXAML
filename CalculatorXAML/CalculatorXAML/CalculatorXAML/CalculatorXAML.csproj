@@ -40,6 +40,10 @@
       <DependentUpon>CalculatorPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CalculateLogic.cs" />
+    <Compile Include="Services\ICalculateLogic.cs" />
+    <Compile Include="ViewModels\ActualSymbolsEnum.cs" />
+    <Compile Include="ViewModels\CalculatorVewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
