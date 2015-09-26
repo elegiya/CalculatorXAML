@@ -12,7 +12,7 @@ namespace CalculatorXAML
         public App()
         {
             // The root page of your application
-            MainPage = new CalculatorPage();
+            MainPage = new CalculatorView();
         }
 
         protected override void OnStart()

@@ -11,9 +11,9 @@ namespace CalculatorXAML
     /// <summary>
     /// Created a new main calculator page
     /// </summary>
-    public partial class CalculatorPage : ContentPage
+    public partial class CalculatorView : ContentPage
     {
-        public CalculatorPage()
+        public CalculatorView()
         {
             InitializeComponent();
         }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CalculatorXAML.Services
 {
+    /// <summary>
+    /// Calculates a value by symbol choise.
+    /// </summary>
     public class CalculateLogicService: ICalculateLogicService
     {
         private const char PLUS_SYMBOL = '+' ;
@@ -15,6 +18,13 @@ namespace CalculatorXAML.Services
         private const char DOT_SYMBOL = '.';
         private const char ZERO_SYMBOL = '0';
 
+        /// <summary>
+        /// Calculates the result between operations when symbol chosen.
+        /// </summary>
+        /// <param name="actualValue">Value was actual before symbol button was pressed.</param>
+        /// <param name="previousSymbol">Symbol to make operation.</param>
+        /// <param name="inputString">New entered string as number to work with.</param>
+        /// <returns>Result of the last operation.</returns>
         public decimal CalculateResult(decimal actualValue, char previousSymbol, string inputString)
         {
             decimal newValue;
@@ -22,6 +32,7 @@ namespace CalculatorXAML.Services
             {
                 throw new ArgumentException();
             }
+
             if (previousSymbol == DOT_SYMBOL)
             {
                 actualValue += ZERO_SYMBOL;
