@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace CalculatorXAML.Services
 {
-    public interface ICalculateLogic
+    public interface ICalculateLogicService
     {
+        decimal CalculateResult(decimal actualValue, char previousSymbol, string inputString);
     }
 }

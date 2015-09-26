@@ -5,12 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
+using CalculatorXAML.Services;
 using Xamarin.Forms;
 
 namespace CalculatorXAML.ViewModels
 {
     public class CalculatorVewModel : INotifyPropertyChanged
     {
+        private readonly ICalculateLogicService _calculateLogic;
+
         private string _formedString;
         private string _historyString;
         private decimal _previousValue;
@@ -18,6 +22,8 @@ namespace CalculatorXAML.ViewModels
 
         public CalculatorVewModel()
         {
+            _calculateLogic = new CalculateLogicService();
+
             this.ChooseDigitCommand = new Command<string>((key) =>
             {
                 if (PreviousSymbol == '=')
@@ -33,6 +39,7 @@ namespace CalculatorXAML.ViewModels
             {
                 CalculateResult(key);
                 InputString = string.Empty;
+                HistoryString += string.Format(" {0} ", key);
             });
 
             this.ChooseEqualCommand = new Command<string>((key) =>
@@ -122,49 +129,29 @@ namespace CalculatorXAML.ViewModels
 
         private void CalculateResult(string key)
         {
-            char selectedSymbol = key[0];
-            decimal newValue;
-            if (!Decimal.TryParse(InputString, out newValue))
-            {
-                //DisplayAlert("Error", "Please, enter a valid number", "OK");
-                return;
-            }
-            if (PreviousSymbol == '.')
-            {
-                PreviousValue += '0';
-            }
             try
             {
-                switch (PreviousSymbol)
-                {
-                    case ('+'):
-                        PreviousValue += newValue;
-                        break;
-                    case ('-'):
-                        PreviousValue -= newValue;
-                        break;
-                    case ('x'):
-                        PreviousValue *= newValue;
-                        break;
-                    case ('/'):
-                        if (newValue == 0)
-                        {
-                            //DisplayAlert("Error", "You can not divide by zero!", "OK");
-                            return;
-                        }
-                        PreviousValue /= newValue;
-                        break;
-                    default:
-                        PreviousValue = newValue;
-                        break;
-                }
+                PreviousValue = _calculateLogic.CalculateResult(PreviousValue, PreviousSymbol, InputString);
+            }
+            catch (DivideByZeroException ex)
+            {
+                Alert("You can not divide by Zero! Please, do another operation!");
             }
             catch (OverflowException ex)
             {
-                //displayalert
+                Alert("The number is too much to count! Please, enter another number!");
             }
-            PreviousSymbol = selectedSymbol;
-            HistoryString += string.Format(" {0} ", selectedSymbol);
+            catch (ArgumentException ex)
+            {
+                Alert("You enter not a valid number! Please, enter another number!");
+            }
+
+            PreviousSymbol = key[0];
+        }
+
+        private async void Alert(string message, string title = "Error")
+        {
+            await UserDialogs.Instance?.AlertAsync(message, title);
         }
     }
 }
