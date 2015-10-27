@@ -91,10 +91,10 @@ namespace CalculatorXAML.ViewModels
 
         #region ICommand implementations
 
-        public ICommand ChooseDigitCommand { protected set; get; }
-        public ICommand ChooseSymbolCommand { protected set; get; }
-        public ICommand ChooseEqualCommand { protected set; get; }
-        public ICommand ChooseCancelCommand { protected set; get; }
+        public ICommand ChooseDigitCommand { get; }
+        public ICommand ChooseSymbolCommand { get; }
+        public ICommand ChooseEqualCommand { get; }
+        public ICommand ChooseCancelCommand { get; }
 
         #endregion
 
@@ -111,6 +111,7 @@ namespace CalculatorXAML.ViewModels
 
                 InputString += key;
                 HistoryString += key;
+                PreviousSymbol = char.MinValue;
             };
         }
 
@@ -120,7 +121,7 @@ namespace CalculatorXAML.ViewModels
             {
                 CalculateResult(key);
                 InputString = string.Empty;
-                HistoryString += string.Format(" {0} ", key);
+                HistoryString += $"{key}";
             };
         }
 
