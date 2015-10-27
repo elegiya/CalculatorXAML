@@ -14,7 +14,6 @@
             <Style x:Key="BaseStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="Silver" />
                 <Setter Property="BorderRadius" Value="20" />
-                <!--<Setter Property="Opacity" Value="1" />-->
             </Style>
 
             <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}"> 
@@ -25,7 +24,7 @@
 
         </ResourceDictionary>
     </ContentPage.Resources>
-    <!--<Button BorderRadius="30"  Opacity="0"  InputTransparent="True">-->
+  
     <Grid>
         <Grid.BindingContext>
             <viewModels:CalculatorVewModel />
@@ -98,7 +97,5 @@
         <Button Text="=" Grid.Row="6" Grid.Column="3" 
                 Command="{Binding ChooseEqualCommand}" CommandParameter="="
                 Style="{StaticResource ButtonStyle}" />
-
     </Grid>
-    <!--</Button>-->
 </ContentPage>

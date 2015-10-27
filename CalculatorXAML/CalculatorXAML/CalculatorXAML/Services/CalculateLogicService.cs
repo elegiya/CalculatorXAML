@@ -1,25 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CalculatorXAML.Services
 {
     /// <summary>
-    /// Calculates a value by symbol choise.
+    ///     Calculates a value by symbol choise.
     /// </summary>
-    public class CalculateLogicService: ICalculateLogicService
+    public class CalculateLogicService : ICalculateLogicService
     {
-        private const char PLUS_SYMBOL = '+' ;
+        #region Private fields
+
+        private const char PLUS_SYMBOL = '+';
         private const char MINUS_SYMBOL = '-';
         private const char MULTIPLY_SYMBOL = 'x';
         private const char DIVIDE_SYMBOL = '/';
         private const char DOT_SYMBOL = '.';
         private const char ZERO_SYMBOL = '0';
 
+        #endregion
+
+        #region Interface method implementation
+
         /// <summary>
-        /// Calculates the result between operations when symbol chosen.
+        ///     Calculates the result between operations when symbol chosen.
         /// </summary>
         /// <param name="actualValue">Value was actual before symbol button was pressed.</param>
         /// <param name="previousSymbol">Symbol to make operation.</param>
@@ -28,7 +30,7 @@ namespace CalculatorXAML.Services
         public decimal CalculateResult(decimal actualValue, char previousSymbol, string inputString)
         {
             decimal newValue;
-            if (!Decimal.TryParse(inputString, out newValue))
+            if (!decimal.TryParse(inputString, out newValue))
             {
                 throw new ArgumentException();
             }
@@ -64,4 +66,6 @@ namespace CalculatorXAML.Services
             return actualValue;
         }
     }
+
+    #endregion
 }

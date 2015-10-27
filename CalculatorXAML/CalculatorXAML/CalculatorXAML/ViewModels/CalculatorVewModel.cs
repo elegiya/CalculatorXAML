@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using CalculatorXAML.Services;
@@ -11,54 +6,34 @@ using Xamarin.Forms;
 
 namespace CalculatorXAML.ViewModels
 {
-    public class CalculatorVewModel : INotifyPropertyChanged
+    public class CalculatorVewModel : BaseViewModel
     {
-        private readonly ICalculateLogicService _calculateLogic;
-
-        private string _formedString;
-        private string _historyString;
-        private decimal _previousValue;
-        private char _previousSymbol;
+        #region Ctor
 
         public CalculatorVewModel()
         {
             _calculateLogic = new CalculateLogicService();
 
-            this.ChooseDigitCommand = new Command<string>((key) =>
-            {
-                if (PreviousSymbol == '=')
-                {
-                    this.InputString = string.Empty;
-                }
-
-                this.InputString += key;
-                this.HistoryString += key;
-            });
-
-            this.ChooseSymbolCommand = new Command<string>((key) =>
-            {
-                CalculateResult(key);
-                InputString = string.Empty;
-                HistoryString += string.Format(" {0} ", key);
-            });
-
-            this.ChooseEqualCommand = new Command<string>((key) =>
-            {
-                CalculateResult(key);
-                InputString = PreviousValue.ToString();
-                HistoryString = string.Empty;
-            });
-
-            this.ChooseCancelCommand = new Command<string>((nothing) =>
-            {
-                InputString = string.Empty;
-                PreviousValue = 0;
-                PreviousSymbol = char.MinValue;
-                HistoryString = string.Empty;
-            });
+            ChooseDigitCommand = new Command<string>(OnDigitChosen());
+            ChooseSymbolCommand = new Command<string>(OnSymbolChosen());
+            ChooseEqualCommand = new Command<string>(OnEqualsChosen());
+            ChooseCancelCommand = new Command<string>(OnCancelChosen());
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region Private fields
+
+        private readonly ICalculateLogicService _calculateLogic;
+        private string _formedString;
+        private string _historyString;
+        private decimal _previousValue;
+        private char _previousSymbol;
+        private const char EQUAL_SYMBOL = '=';
+
+        #endregion
+
+        #region Properties
 
         public string InputString
         {
@@ -68,7 +43,7 @@ namespace CalculatorXAML.ViewModels
                 if (_formedString != value)
                 {
                     _formedString = value;
-                    OnPropertyChanged("InputString");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -81,7 +56,7 @@ namespace CalculatorXAML.ViewModels
                 if (_historyString != value)
                 {
                     _historyString = value;
-                    OnPropertyChanged("HistoryString");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -94,7 +69,7 @@ namespace CalculatorXAML.ViewModels
                 if (_previousValue != value)
                 {
                     _previousValue = value;
-                    OnPropertyChanged("PreviousValue");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -107,21 +82,72 @@ namespace CalculatorXAML.ViewModels
                 if (_previousSymbol != value)
                 {
                     _previousSymbol = value;
-                    OnPropertyChanged("PreviousSymbol");
+                    OnPropertyChanged();
                 }
             }
         }
-        
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
-        // ICommand implementations
+        #endregion
+
+        #region ICommand implementations
+
         public ICommand ChooseDigitCommand { protected set; get; }
         public ICommand ChooseSymbolCommand { protected set; get; }
         public ICommand ChooseEqualCommand { protected set; get; }
         public ICommand ChooseCancelCommand { protected set; get; }
+
+        #endregion
+
+        #region Private Methods for Command Subscribing
+
+        private Action<string> OnDigitChosen()
+        {
+            return key =>
+            {
+                if (PreviousSymbol == EQUAL_SYMBOL)
+                {
+                    InputString = string.Empty;
+                }
+
+                InputString += key;
+                HistoryString += key;
+            };
+        }
+
+        private Action<string> OnSymbolChosen()
+        {
+            return key =>
+            {
+                CalculateResult(key);
+                InputString = string.Empty;
+                HistoryString += string.Format(" {0} ", key);
+            };
+        }
+
+        private Action<string> OnEqualsChosen()
+        {
+            return key =>
+            {
+                CalculateResult(key);
+                InputString = PreviousValue.ToString();
+                HistoryString = string.Empty;
+            };
+        }
+
+        private Action<string> OnCancelChosen()
+        {
+            return nothing =>
+            {
+                InputString = string.Empty;
+                PreviousValue = 0;
+                PreviousSymbol = char.MinValue;
+                HistoryString = string.Empty;
+            };
+        }
+
+        #endregion
+
+        #region Alerts for UI
 
         private void CalculateResult(string key)
         {
@@ -129,15 +155,15 @@ namespace CalculatorXAML.ViewModels
             {
                 PreviousValue = _calculateLogic.CalculateResult(PreviousValue, PreviousSymbol, InputString);
             }
-            catch (DivideByZeroException ex)
+            catch (DivideByZeroException)
             {
                 Alert("You can not divide by Zero! Please, do another operation!");
             }
-            catch (OverflowException ex)
+            catch (OverflowException)
             {
                 Alert("The number is too much to count! Please, enter another number!");
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 Alert("You enter not a valid number! Please, enter another number!");
             }
@@ -149,5 +175,7 @@ namespace CalculatorXAML.ViewModels
         {
             await UserDialogs.Instance?.AlertAsync(message, title);
         }
+
+        #endregion
     }
 }
