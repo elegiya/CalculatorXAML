@@ -55,7 +55,7 @@ namespace CalculatorXAML.Tests.ViewModels
         }
 
         [Test]
-        public void ChooseSymbolCommand_ModifyInputHistoryStrings()
+        public void ChooseEqualCommand_Strings()
         {
             //arrange
             var _calculateLogicServiceMock = new Mock<ICalculateLogicService>();
@@ -63,19 +63,52 @@ namespace CalculatorXAML.Tests.ViewModels
                 c => c.CalculateResult(It.IsAny<decimal>(), It.IsAny<char>(), It.IsAny<string>()))
                 .Returns(RETURNED_VALUE_FROM_SERVICE);
             
-            _calculatorViewModel.InputString = "12";
+            _calculatorViewModel.PreviousValue = 11;
+            _calculatorViewModel.PreviousSymbol = '+';
+            _calculatorViewModel.InputString = "45";
             _calculatorViewModel.HistoryString = "23+44-12";
-
-            var actualSymbol = '-';
-
-            var expectedInputString = string.Empty;
-            var expectedHistoryString = $"{_calculatorViewModel.HistoryString}{actualSymbol}";
+            
+            var expectedPreviousValue = 56;
+            var expectedPreviousSymbol = '=';
+            var expectedInputString = expectedPreviousValue.ToString();
+            var expectedHistoryString = string.Empty;
 
             //act
-            _calculatorViewModel.ChooseSymbolCommand.Execute("-");
+            _calculatorViewModel.ChooseEqualCommand.Execute("=");
 
             //assert
             Assert.AreEqual(_calculatorViewModel.InputString, expectedInputString);
+            Assert.AreEqual(_calculatorViewModel.PreviousValue, expectedPreviousValue);
+            Assert.AreEqual(_calculatorViewModel.PreviousSymbol, expectedPreviousSymbol);
+            Assert.AreEqual(_calculatorViewModel.HistoryString, expectedHistoryString);
+        }
+
+        [Test]
+        public void ChooseCancelCommand_CleansPreviousValues()
+        {
+            //arrange
+            var _calculateLogicServiceMock = new Mock<ICalculateLogicService>();
+            _calculateLogicServiceMock.Setup(
+                c => c.CalculateResult(It.IsAny<decimal>(), It.IsAny<char>(), It.IsAny<string>()))
+                .Returns(RETURNED_VALUE_FROM_SERVICE);
+            
+            var expectedInputString = string.Empty;
+            var expectedPreviousValue = 0;
+            var expectedPreviousSymbol = char.MinValue;
+            var expectedHistoryString = string.Empty;
+
+            _calculatorViewModel.InputString = "test string";
+            _calculatorViewModel.PreviousValue = 23;
+            _calculatorViewModel.PreviousSymbol = 'l';
+            _calculatorViewModel.HistoryString = "2+2";
+
+            //act
+            _calculatorViewModel.ChooseCancelCommand.Execute("-");
+
+            //assert
+            Assert.AreEqual(_calculatorViewModel.InputString, expectedInputString);
+            Assert.AreEqual(_calculatorViewModel.PreviousValue, expectedPreviousValue);
+            Assert.AreEqual(_calculatorViewModel.PreviousSymbol, expectedPreviousSymbol);
             Assert.AreEqual(_calculatorViewModel.HistoryString, expectedHistoryString);
         }
     }
